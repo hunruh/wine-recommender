@@ -1,5 +1,5 @@
-importScripts('/static/jquery.nodom.js');
-importScripts('/static/bloodhound.js');
+importScripts('/static/lib/jquery.nodom.js');
+importScripts('/static/lib/bloodhound.js');
 
 var wineSuggestionEngine = new Bloodhound({
     initialize: false,

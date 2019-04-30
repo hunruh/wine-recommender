@@ -4,14 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/bulma.min.css">
-    <link rel="stylesheet" href="/static/bulma-pageloader.min.css">
+    <link rel="stylesheet" href="/static/lib/bulma.min.css">
+    <link rel="stylesheet" href="/static/lib/bulma-pageloader.min.css">
     <link rel="stylesheet" href="/static/index.css">
     <title>NBA6070 Demo</title>
 </head>
 
 <body>
-    <div class="pageloader is-active is-info"><span class="title">Preparing Wine List</span></div>
+    <div class="pageloader is-active is-info"><span class="title">
+        Preparing Wine List 
+    </span></div>
     <section class="section">
         <div class="level">
             <div class="level-item has-text-centered">
@@ -64,12 +66,11 @@
     </section>
 </body>
 
-<script src="/static/jquery-3.4.0.min.js"></script>
-<script src="/static/bloodhound.js"></script>
-<script src="/static/pouchdb-7.0.0.min.js"></script>
-<script src="/static/pouchdb.find.js"></script>
-<script>var winesIndexFile = '{{ url_for("static", filename="wines_index.json") }}';</script>
+<script src="/static/lib/jquery-3.4.0.min.js"></script>
+<script src="/static/lib/bloodhound.js"></script>
+<script src="/static/lib/pouchdb-7.0.0.min.js"></script>
+<script src="/static/lib/pouchdb.find.js"></script>
 <script src="/static/index.js"></script>
-<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+<script src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
 </html>
