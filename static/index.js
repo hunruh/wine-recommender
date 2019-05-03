@@ -1,13 +1,4 @@
-// Initialize Firebase
-var config = {
-    apiKey: "AIzaSyBXNW9xZURL4w7El8uxxmSvMF79sQWya6k",
-    authDomain: "winerecommender-239319.firebaseapp.com",
-    databaseURL: "https://winerecommender-239319.firebaseio.com",
-    projectId: "winerecommender-239319",
-    storageBucket: "winerecommender-239319.appspot.com",
-    messagingSenderId: "576868705644"
-};
-firebase.initializeApp(config);
+firebase.initializeApp(firebaseConfig);
   
 const db = firebase.firestore();
 
