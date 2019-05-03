@@ -1,12 +1,23 @@
-const db = new PouchDB('http://localhost:5984/wines');
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyBXNW9xZURL4w7El8uxxmSvMF79sQWya6k",
+    authDomain: "winerecommender-239319.firebaseapp.com",
+    databaseURL: "https://winerecommender-239319.firebaseio.com",
+    projectId: "winerecommender-239319",
+    storageBucket: "winerecommender-239319.appspot.com",
+    messagingSenderId: "576868705644"
+};
+firebase.initializeApp(config);
+  
+const db = firebase.firestore();
 
-var wineSuggestionEngine = new Bloodhound({
-    initialize: false,
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    identify: function(obj) { return obj.name; },
-    prefetch: '/static/wines_index.json'
-});
+var likedWines = [];
+var dislikedWines = [];
+
+const likedWinesSection = $('.wines-like');
+const likedWinesEmptyMessage = likedWinesSection.find('.no-wines');
+const dislikedWinesSection = $('.wines-dislike');
+const dislikedWinesEmptyMessage = dislikedWinesSection.find('.no-wines');
 
 const bloodhoundWorker = new Worker('/static/bloodhound_worker.js');
 bloodhoundWorker.onmessage = function(e) {
@@ -56,12 +67,12 @@ function initializeSuggestionsHTML() {
                         <div class="content has-text-left"></div>
                     </div>
                     <footer class="card-footer">
-                        <a href="#" class="card-footer-item has-text-info">
+                        <a href="#" class="card-footer-item has-text-info suggestion-like">
                             <span class="icon">
                                 <i class="far fa-thumbs-up" aria-hidden="true"></i>
                             </span>
                         </a>
-                        <a href="#" class="card-footer-item has-text-danger">
+                        <a href="#" class="card-footer-item has-text-danger suggestion-dislike">
                             <span class="icon">
                                 <i class="far fa-thumbs-down" aria-hidden="true"></i>
                             </span>
@@ -75,47 +86,110 @@ function initializeSuggestionsHTML() {
 function populateSuggestions(data) {
     if (data.length === 0) return;
 
-    if (data.length > 12) {
-        data = data.slice(0, 12)
-    } else {
-        hideSuggestions(data.length);
+    // Only provide suggestions for wines that have not been selected
+    const filteredData = [];
+    var dataIdx = 0;
+    while (dataIdx < 12) {
+        if (dataIdx >= data.length) break;
+        if (likedWines.indexOf(data[dataIdx].id) == -1 && dislikedWines.indexOf(data[dataIdx].id) == -1) {
+            filteredData.push(data[dataIdx]);
+        }
+
+        dataIdx += 1;
     }
 
-    var requestDocs = [];
-    data.forEach(function(doc) {
-        requestDocs.push({ 'id' : '' + doc['id'] });
-    });
-    db.bulkGet({
-        docs: requestDocs
-    }).then(function (results) {
-        var outputIdx = 0;
-        var currentColumn;
+    if (filteredData.length <= 12) {
+        hideSuggestions(filteredData.length);
+    }
 
-        results.results.forEach(function(result) {
-            const id = result.id;
-            const columnNumber = Math.floor(outputIdx / 4);
-            const rowNumber = outputIdx % 4;
-            const name = result.docs[0].ok.name;
-            const description = result.docs[0].ok.description;
-            const truncatedLength = Math.min(150, description.length);
-            const descriptionTruncated = description.substring(0, truncatedLength) +
-                (truncatedLength == 150 ? "..." : "");
-
-            const resultCard = $('.suggestion-results-' + columnNumber + '-' + rowNumber);
-            resultCard.find('.card-header-title').text(name);
-            resultCard.find('.content').text(descriptionTruncated);
-            if (resultCard.hasClass('is-invisible')) {
-                resultCard.removeClass('is-invisible');
+    var outputIdx = 0;
+    var currentColumn;
+    filteredData.forEach(function(item) {
+        var docRef = db.collection("wines").doc("" + item['id']);
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                const docData = doc.data();
+                const id = item['id'];
+                const columnNumber = Math.floor(outputIdx / 4);
+                const rowNumber = outputIdx % 4;
+                const name = docData.name;
+                const description = docData.description;
+                const truncatedLength = Math.min(150, description.length);
+                const descriptionTruncated = description.substring(0, truncatedLength) +
+                    (truncatedLength == 150 ? "..." : "");
+    
+                const resultCard = $('.suggestion-results-' + columnNumber + '-' + rowNumber);
+                resultCard.find('.card-header-title').text(name);
+                resultCard.find('.content').text(descriptionTruncated);
+                resultCard.find('.suggestion-like').data('wine-id', id);
+                resultCard.find('.suggestion-dislike').data('wine-id', id);
+                if (resultCard.hasClass('is-invisible')) {
+                    resultCard.removeClass('is-invisible');
+                }
+                if (resultCard.parent().hasClass('is-hidden')) {
+                    resultCard.parent().removeClass('is-hidden');
+                }
+    
+                outputIdx += 1;
+            } else {
+                console.log("No such document:", item['id']);
             }
-            if (resultCard.parent().hasClass('is-hidden')) {
-                resultCard.parent().removeClass('is-hidden');
-            }
-
-            outputIdx += 1;
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
         });
-    }).catch(function (err) {
-      console.log(err);
     });
+}
+
+function addSelectedWine(likedWine, id, title, content) {
+    var section, backgroundColor;
+    if (likedWine) {
+        section = likedWinesSection;
+        likedWines.push(Number(id));
+        backgroundColor = 'has-background-info';
+    } else {
+        section = dislikedWinesSection;
+        dislikedWines.push(Number(id));
+        backgroundColor = 'has-background-danger';
+    }
+
+    section.append(`
+        <div class="column selection-` + id + `">
+            <div class="card">
+                <header class="card-header ` + backgroundColor + `">
+                    <p class="card-header-title has-text-white-bis">` + title + `</p>
+                    <a href="#" class="card-header-icon has-text-white-bis suggestion-remove" data-wine-id="` + id + `">
+                        <span class="icon">
+                            <i class="far fa-trash-alt" aria-hidden="true"></i>
+                        </span>
+                    </a>
+                </header>
+                <div class="card-content">
+                    <div class="content has-text-left">` + content + `</div>
+                </div>
+            </div>
+        </div>`);
+
+    $('.suggestion-remove').on('click', function(event) {
+        const wineId = $(this).data('wine-id');
+        $('.selection-' + wineId).remove();
+
+        const likedIndex = likedWines.indexOf(wineId);
+        const dislikedIndex = dislikedWines.indexOf(wineId);
+        if (likedIndex > -1) {
+            likedWines.splice(likedIndex, 1);
+            if (likedWines.length == 0 && likedWinesEmptyMessage.hasClass('is-hidden')) {
+                likedWinesEmptyMessage.removeClass('is-hidden');
+            }
+        } else {
+            dislikedWines.splice(dislikedIndex, 1);
+            if (dislikedWines.length == 0 && dislikedWinesEmptyMessage.hasClass('is-hidden')) {
+                dislikedWinesEmptyMessage.removeClass('is-hidden');
+            }
+        }
+    });
+
+    const inputValue = $('.wine-search-field').val(); 
+    bloodhoundWorker.postMessage(inputValue);
 }
 
 $(document).ready(function() {
@@ -127,9 +201,56 @@ $(document).ready(function() {
         const inputValue = $('.wine-search-field').val(); 
 
         if (inputValue.length > 2) {
-            bloodhoundWorker.postMessage(inputValue)
+            bloodhoundWorker.postMessage(inputValue);
         } else {
             hideSuggestions(0);
         }
     });
+
+    $('.suggestion-like').on('click', function(event) {
+        const clickedButton = $(this);
+        const wineId = clickedButton.data('wine-id');
+        if (!likedWinesEmptyMessage.hasClass('is-hidden')) {
+            likedWinesEmptyMessage.addClass('is-hidden');
+        }
+
+        console.log(wineId);
+
+        var docRef = db.collection("wines").doc("" + wineId);
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                const docData = doc.data();
+                addSelectedWine(true, wineId, docData.name, docData.description);
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    });
+
+    $('.suggestion-dislike').on('click', function(event) {
+        const clickedButton = $(this);
+        const wineId = clickedButton.data('wine-id');
+        if (!dislikedWinesEmptyMessage.hasClass('is-hidden')) {
+            dislikedWinesEmptyMessage.addClass('is-hidden');
+        }
+
+        var docRef = db.collection("wines").doc("" + wineId);
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                const docData = doc.data();
+                addSelectedWine(false, wineId, docData.name, docData.description);
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    });
+
+    $('.recommendations-submit').on('click', function(event) {
+        const parameters = 'likes=' + likedWines.toString() + '&dislikes=' + dislikedWines.toString();
+        window.location.href = window.location.origin + '/query?' + parameters;
+    })
 });

@@ -1,3 +1,8 @@
 .is-hidden {
     display: none;
 }
+
+.wines-like, .wines-dislike {
+    max-height: 500px;
+    overflow-y: scroll;
+}

@@ -31,24 +31,29 @@
         <div class="columns">
             <div class="column has-text-centered">
                 <h2 class="subtitle">Wines You Like</h2>
-                <article class="message is-info">
-                    <div class="message-body">
-                        No Wines Have Been Selected
-                    </div>
-                </article>
+                <div class="wines-like">
+                    <article class="message is-info no-wines">
+                        <div class="message-body">
+                            No Wines Have Been Selected
+                        </div>
+                    </article>
+                </div>
+                
             </div>
             <div class="column has-text-centered">
                 <h2 class="subtitle">Wines You Dislike</h2>
-                <article class="message is-danger">
-                    <div class="message-body">
-                        No Wines Have Been Selected
-                    </div>
-                </article>
+                <div class="wines-dislike">
+                    <article class="message is-danger no-wines">
+                        <div class="message-body">
+                            No Wines Have Been Selected
+                        </div>
+                    </article>
+                </div>
             </div>
         </div>
         <div class="field is-grouped is-grouped-centered">
             <p class="control">
-                <a class="button is-link">
+                <a class="button is-link recommendations-submit">
                     Get Recommendations
                 </a>
             </p>
@@ -66,10 +71,10 @@
     </section>
 </body>
 
+<script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.11.1/firebase-firestore.js"></script>
 <script src="/static/lib/jquery-3.4.0.min.js"></script>
 <script src="/static/lib/bloodhound.js"></script>
-<script src="/static/lib/pouchdb-7.0.0.min.js"></script>
-<script src="/static/lib/pouchdb.find.js"></script>
 <script src="/static/index.js"></script>
 <script src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 

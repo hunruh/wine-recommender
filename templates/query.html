@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/lib/bulma.min.css">
+    <link rel="stylesheet" href="/static/lib/bulma-pageloader.min.css">
+    <link rel="stylesheet" href="/static/index.css">
+    <title>NBA6070 Demo</title>
+</head>
+
+<body>
+    <section class="section">
+        <div class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    <p class="heading">
+                        Intelligent Suggestions based on Your Wine Preferences
+                    </p>
+                    <p class="title">Wine Recommender</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="columns">
+            <div class="column">
+                <h2 class="subtitle">Suggestions</h2>
+                {% for wine in results %}
+                    <section class="level">
+                        <div class="card">
+                            <header class="card-header has-background-primary">
+                                <p class="card-header-title has-text-white">{{ wine['name'] }}</p>
+                            </header>
+                            <div class="card-content">
+                                <div class="content has-text-left">{{ wine['description'] }}</div>
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+            <div class="column">
+                <h2 class="subtitle">Wines You Liked</h2>
+                {% for wine in liked_wines %}
+                    <section class="level">
+                        <div class="card">
+                            <header class="card-header has-background-info">
+                                <p class="card-header-title has-text-white">{{ wine['name'] }}</p>
+                            </header>
+                            <div class="card-content">
+                                <div class="content has-text-left">{{ wine['description'] }}</div>
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+            <div class="column">
+                <h2 class="subtitle">Wines You Disliked</h2>
+                {% for wine in disliked_wines %}
+                    <section class="level">
+                        <div class="card">
+                            <header class="card-header has-background-danger">
+                                <p class="card-header-title has-text-white">{{ wine['name'] }}</p>
+                            </header>
+                            <div class="card-content">
+                                <div class="content has-text-left">{{ wine['description'] }}</div>
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</body>
+
+<script src="/static/lib/jquery-3.4.0.min.js"></script>
+<script src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+</html>

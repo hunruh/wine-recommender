@@ -3,9 +3,9 @@ importScripts('/static/lib/bloodhound.js');
 
 var wineSuggestionEngine = new Bloodhound({
     initialize: false,
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('n'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    identify: function(obj) { return obj.name; },
+    identify: function(obj) { return obj.n; },
     prefetch: '/static/wines_index.json'
 });
 
