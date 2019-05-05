@@ -241,7 +241,18 @@ $(document).ready(function() {
     });
 
     $('.recommendations-submit').on('click', function(event) {
-        const parameters = 'likes=' + likedWines.toString() + '&dislikes=' + dislikedWines.toString();
-        window.location.href = window.location.origin + '/query?' + parameters;
+        if (likedWines.length == 0) {
+            const message = "You must include at least one wine you like";
+            const invalidSubmitElement = $('.invalid-submit');
+            invalidSubmitElement.text(message);
+            if(invalidSubmitElement.hasClass('is-hidden')) {
+                $('.invalid-submit').removeClass('is-hidden');
+            }
+        } else {
+            $('.pageloader').addClass('is-active');
+            $('.pageloader').children('.title').text('Calculating suggestions...');
+            const parameters = 'likes=' + likedWines.toString() + '&dislikes=' + dislikedWines.toString();
+            window.location.href = window.location.origin + '/query?' + parameters;
+        }
     })
 });

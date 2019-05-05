@@ -34,7 +34,28 @@
                                 <p class="card-header-title has-text-white">{{ wine['name'] }}</p>
                             </header>
                             <div class="card-content">
-                                <div class="content has-text-left">{{ wine['description'] }}</div>
+                                <div class="content has-text-left">
+                                    {% if wine['province'] is defined %}
+                                        <p class="heading">Province</p>
+                                        <p class="is-small">{{ wine['province'] }}</p>
+                                    {% endif %}
+                                    {% if (wine['region1'] is defined) and (wine['region1'] != '') %}
+                                        <p class="heading">Region</p>
+                                        <p class="is-small">{{ wine['region1'] }}{% if (wine['region2'] is defined) and (wine['region2'] != '') %}, {{ wine['region2']}}{% endif %}</p>
+                                    {% endif %}
+                                    {% if wine['variety'] is defined %}
+                                        <p class="heading">Variety</p>
+                                        <p class="is-small">{{ wine['variety'] }}</p>
+                                    {% endif %}
+                                    {% if wine['winery'] is defined %}
+                                        <p class="heading">Winery</p>
+                                        <p class="is-small">{{ wine['winery'] }}</p>
+                                    {% endif %}
+                                    <p class="heading">Description</p>
+                                    <p class="is-small">{{ wine['description'] }}</p>
+                                    <p class="heading">Relevance Score</p>
+                                    <p class="is-size-5 has-text-weight-semibold">{{ wine['score'] }}</p>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -49,7 +70,26 @@
                                 <p class="card-header-title has-text-white">{{ wine['name'] }}</p>
                             </header>
                             <div class="card-content">
-                                <div class="content has-text-left">{{ wine['description'] }}</div>
+                                <div class="content has-text-left">
+                                    {% if wine['province'] is defined %}
+                                        <p class="heading">Province</p>
+                                        <p class="is-small">{{ wine['province'] }}</p>
+                                    {% endif %}
+                                    {% if (wine['region1'] is defined) and (wine['region1'] != '') %}
+                                        <p class="heading">Region</p>
+                                        <p class="is-small">{{ wine['region1'] }}{% if (wine['region2'] is defined) and (wine['region2'] != '') %}, {{ wine['region2']}}{% endif %}</p>
+                                    {% endif %}
+                                    {% if wine['variety'] is defined %}
+                                        <p class="heading">Variety</p>
+                                        <p class="is-small">{{ wine['variety'] }}</p>
+                                    {% endif %}
+                                    {% if wine['winery'] is defined %}
+                                        <p class="heading">Winery</p>
+                                        <p class="is-small">{{ wine['winery'] }}</p>
+                                    {% endif %}
+                                    <p class="heading">Description</p>
+                                    <p class="is-small">{{ wine['description'] }}</p>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -64,7 +104,26 @@
                                 <p class="card-header-title has-text-white">{{ wine['name'] }}</p>
                             </header>
                             <div class="card-content">
-                                <div class="content has-text-left">{{ wine['description'] }}</div>
+                                <div class="content has-text-left">
+                                    {% if wine['province'] is defined %}
+                                        <p class="heading">Province</p>
+                                        <p class="is-small">{{ wine['province'] }}</p>
+                                    {% endif %}
+                                    {% if (wine['region1'] is defined) and (wine['region1'] != '') %}
+                                        <p class="heading">Region</p>
+                                        <p class="is-small">{{ wine['region1'] }}{% if (wine['region2'] is defined) and (wine['region2'] != '') %}, {{ wine['region2']}}{% endif %}</p>
+                                    {% endif %}
+                                    {% if wine['variety'] is defined %}
+                                        <p class="heading">Variety</p>
+                                        <p class="is-small">{{ wine['variety'] }}</p>
+                                    {% endif %}
+                                    {% if wine['winery'] is defined %}
+                                        <p class="heading">Winery</p>
+                                        <p class="is-small">{{ wine['winery'] }}</p>
+                                    {% endif %}
+                                    <p class="heading">Description</p>
+                                    <p class="is-small">{{ wine['description'] }}</p>
+                                </div>
                             </div>
                         </div>
                     </section>
